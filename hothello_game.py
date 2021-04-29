@@ -51,22 +51,38 @@ class Board:
         print(white, "\n")
 
 class Game:
-    def __init__(self, board):
+    def __init__(self, board, player1, player2):
         self.board = board
+        self.player1 = player1
+        self.player2 = player2
+        self.game_moves = [] # List that contains all the moves made by each player
     
-    def setup_players(self, token1, token2):
-        player1 = Player("Diego")
-        player2 = Player("Dussan")
+    def setup_players(self):
+        print("Who will start?", "\n1) Player1 \n2) Player2 \nchoose one: ")
+        selection = int(input())
+
+        token1 = Token(settings.face_up) if selection == 1 else Token(settings.face_down)
+        token2 = Token(settings.face_down) if selection == 1 else Token(settings.face_up)
         for i in range(32):
             player1.tokens.append(token1)
             player2.tokens.append(token2)
-        return player1, player2
+
+    def match(self):
+        print("player 1 makes move and his tokens are reduced by 1")
+        print("player 2 makes move and his tokens are reduced by 1")
+        print("moves are registered in each player move list and in the general game_move list")
+        
+        print("if a move is invalid the player has to try another move")
+        print("flanked tokens change their side (character face_up or face_down)")
+        print("game registers and draws the board and all the moves made")
+        print("game move recomendations will be added at the end")
+        board.draw_board()
+        
 
     def play(self):
-        token1 = Token(settings.face_up)
-        token2 = Token(settings.face_down)
-        player1, player2 = self.setup_players(token1, token2) #Create players and distribute tokens
-        board.draw_board()
+        self.setup_players() # Distribute tokens
+        #board.draw_board()
+        self.match()
 
 if __name__ == "__main__":
     settings = Settings()
@@ -84,10 +100,10 @@ if __name__ == "__main__":
     settings.heuristic = HeuristicFunction().heuristic1
     board = Board(cells)
     # os.system("cls")   NECESARIO.  Si los coclores no funcionan hay que hacer un cls
-    #board.draw_board()
-    #print(cells[0][1].token) # [fila][columna] (y,x)
 
-    game = Game(board)
+    player1 = Player("Diego")
+    player2 = Player("Dussan")
+    game = Game(board, player1, player2)
     game.play()
 
 """ Colors:
