@@ -14,7 +14,7 @@ class Player:
     def __init__(self, name):
         self.name = name
         self.tokens = []
-        self.moves = []
+        self.moves = [] # each item: (column, row)
         #self.settings = settings
 
 class Token:
@@ -56,6 +56,7 @@ class Game:
         self.player1 = player1
         self.player2 = player2
         self.game_moves = [] # List that contains all the moves made by each player
+        self.recomended_moves = []
     
     def setup_players(self):
         print("Who will start?", "\n1) Player1 \n2) Player2 \nchoose one: ")
@@ -66,6 +67,37 @@ class Game:
         for i in range(32):
             player1.tokens.append(token1)
             player2.tokens.append(token2)
+    
+    def recomend_moves(self, player):
+        for row in board.cells:
+            for cell in row:
+                print()
+                #if has adyacent enemy token
+                #if adyacent token has adyacent ally to flank with  ()
+        print()
+
+    def is_recomended_move(self, column, row):
+        return (column, row) in self.recomended_moves
+
+    def valid_move(self, column, row):
+        valid = False
+        valid = True if self.is_recomended_move(column, row) else False
+        print("Enter valid move please!")
+        return valid
+
+    def make_move(self, player):
+        print(player.name, "Select a cell to place your token")
+        print("column: ", end="")
+        column = int(input()) - 1
+        print("row: ", end="")
+        row = int(input()) - 1
+        #accepted = self.valid_move(column, row)
+        
+        board.cells[row][column].token = player.tokens[0]
+        player.tokens.pop()
+        self.game_moves.append((player.tokens[0].value, column, row))
+        print(len(player.tokens))
+
 
     def match(self):
         print("player 1 makes move and his tokens are reduced by 1")
@@ -77,6 +109,20 @@ class Game:
         print("game registers and draws the board and all the moves made")
         print("game move recomendations will be added at the end")
         board.draw_board()
+        while len(player1.tokens) > 0 and len(player2.tokens) > 0  or  len(recomend_moves) > 0:
+            #self.recomend_moves(player1)
+            self.make_move(player1)
+            board.draw_board()
+            game_moves = []
+            
+            #self.recomend_moves(player2)
+            self.make_move(player2)
+            board.draw_board()
+            game_moves = []
+            
+            print(self.game_moves)
+
+        
         
 
     def play(self):
