@@ -147,27 +147,44 @@ class Game:
         for r_move in self.recomended_moves:
             #print(r_move[0][0], r_move[0][1])
             if column == r_move[0][0] and row == r_move[0][1]:
-                return True
-        return False#(column, row) in self.recomended_moves[0]
+                flank = r_move[1] # (flank_col, flank_row)
+                return True, flank
+        return False, (0,0)#(column, row) in self.recomended_moves[0]
 
     def valid_move(self, column, row):
         valid = False
-        valid = True if self.is_recomended_move(column, row) else False
+        validated, flank = self.is_recomended_move(column, row)
+        valid = True if  validated else False
         print("Enter valid move please!")
-        return valid
+        return valid, flank
+
+    def do_flank(self, col, row, flank, player):
+        f_col = flank[0] - 1
+        f_row = flank[1] - 1
+        #print(f_col, f_row, col, row)
+        #input()
+        while (f_col != col or f_row != row)  and not self.out_of_bounds(f_col, f_row):
+            self.board.cells[f_row][f_col].token = player.tokens[0]
+            
+            f_row = f_row + 1 if row > f_row else f_row - 1 if row < f_row else f_row
+            f_col = f_col + 1 if col > f_col else f_col - 1 if col < f_col else f_col
 
     def make_move(self, player):
         accepted = False
+        flank = (0,0) # col, row
         while(accepted == False):
             print(player.name, "Select a cell to place your token")
             print("column: ", end="")
             column = int(input()) - 1
             print("row: ", end="")
             row = int(input()) - 1
-            accepted = self.valid_move(column+1, row+1) # +1 to match the UI positions
+            accepted, flank = self.valid_move(column+1, row+1) # +1 to match the UI positions
         
         board.cells[row][column].token = player.tokens[0]
         player.tokens.pop()
+
+        self.do_flank(column, row, flank, player)
+
         self.game_moves.append((player.tokens[0].value, column+1, row+1)) # +1 to match the UI positions
         print(len(player.tokens))
 
