@@ -106,28 +106,33 @@ class Game:
         ally_token_value = player.tokens[0].value
         enemy_token_value  = settings.face_up if  ally_token_value == settings.face_down else settings.face_down # Sera siempre opuesto al ally_token
         flank_count = 0
-        #print(next_row,next_column)
+        
         if not self.out_of_bounds(next_column, next_row):  # VERIFICAR QUE NO SALGA DEL MAPA
-            #print(board.cells[next_row][next_column].token.value)
             next_token = board.cells[next_row][next_column].token.value
             if next_token == enemy_token_value:
                 while not self.out_of_bounds(next_column, next_row) and (next_token == enemy_token_value or next_token == ally_token_value): 
                     if board.cells[next_row][next_column].token.value == ally_token_value:
-                        data = ((col+1, row+1), (next_column+1, next_row+1), flank_count) #+1 to match the user interface positions
-                        self.recomended_moves.append(data)
-                        return True
+                        #data = ((col+1, row+1), (next_column+1, next_row+1), flank_count) #+1 to match the user interface positions
+                        flank_pos = [next_column+1, next_row+1]# +1 to match the user interface positions
+                        #self.recomended_moves.append(data)
+                        return flank_pos, flank_count
                     else:
                         flank_count += 1
                         next_column, next_row = self.next_position(direction, next_column, next_row)
-        return False
+        return (-1, -1), -1
 
 
-    def search_flank(self, col, row, player):
+    def search_flanks(self, col, row, player):
         actual_col = col
         actual_row = row
+        flanks = [] # Lista de tuplas de todos los flanks validos posibles de una celda "cell" con su numero de fichas a flankear (flank_count)
         for direction in self.directions:
-            self.explore(direction, col, row, player)
-            
+            flank_pos, flank_count = self.explore(direction, col, row, player)
+            if flank_count != -1:
+                flanks.append([flank_pos, flank_count])
+        if len(flanks) > 0:
+            flanking_data = [(col+1, row+1), flanks]  # +1 to match the user interface positions
+            self.recomended_moves.append(flanking_data)
 
     def recomend_moves(self, player):
         row_i = 0
@@ -135,7 +140,7 @@ class Game:
         for row in board.cells:
             for cell in row:
                 if cell.token.value == "_":
-                    self.search_flank(col_i, row_i, player)
+                    self.search_flanks(col_i, row_i, player)
                 col_i += 1
                 #if has adyacent enemy token
                 #if adyacent token has adyacent ally to flank with  ()
@@ -145,29 +150,33 @@ class Game:
 
     def is_recomended_move(self, column, row):
         for r_move in self.recomended_moves:
-            #print(r_move[0][0], r_move[0][1])
             if column == r_move[0][0] and row == r_move[0][1]:
-                flank = r_move[1] # (flank_col, flank_row)
-                return True, flank
+                flanks = r_move[1] # (flank_col, flank_row)
+                return True, flanks
         return False, (0,0)#(column, row) in self.recomended_moves[0]
 
     def valid_move(self, column, row):
         valid = False
-        validated, flank = self.is_recomended_move(column, row)
+        validated, flanks = self.is_recomended_move(column, row)
         valid = True if  validated else False
         print("Enter valid move please!")
-        return valid, flank
+        return valid, flanks
 
-    def do_flank(self, col, row, flank, player):
-        f_col = flank[0] - 1
-        f_row = flank[1] - 1
-        #print(f_col, f_row, col, row)
-        #input()
-        while (f_col != col or f_row != row)  and not self.out_of_bounds(f_col, f_row):
-            self.board.cells[f_row][f_col].token = player.tokens[0]
-            
-            f_row = f_row + 1 if row > f_row else f_row - 1 if row < f_row else f_row
-            f_col = f_col + 1 if col > f_col else f_col - 1 if col < f_col else f_col
+    def do_flanks(self, col, row, flanks, player):
+        f_col = 0
+        f_row = 0
+        for flank in flanks:
+            f_col = int(flank[0][0]) # flank = [[flank_position], flank_count] => flank[0] = [flank_col, flank_row]
+            f_row = int(flank[0][1])
+            f_col -= 1
+            f_row -= 1
+            #print(f_col, f_row, col, row)  
+            #input()
+            while (f_col != col or f_row != row)  and not self.out_of_bounds(f_col, f_row):
+                self.board.cells[f_row][f_col].token = player.tokens[0]
+                
+                f_row = f_row + 1 if row > f_row else f_row - 1 if row < f_row else f_row
+                f_col = f_col + 1 if col > f_col else f_col - 1 if col < f_col else f_col
 
     def make_move(self, player):
         accepted = False
@@ -178,12 +187,12 @@ class Game:
             column = int(input()) - 1
             print("row: ", end="")
             row = int(input()) - 1
-            accepted, flank = self.valid_move(column+1, row+1) # +1 to match the UI positions
+            accepted, flanks = self.valid_move(column+1, row+1) # +1 to match the UI positions
         
         board.cells[row][column].token = player.tokens[0]
         player.tokens.pop()
 
-        self.do_flank(column, row, flank, player)
+        self.do_flanks(column, row, flanks, player)
 
         self.game_moves.append((player.tokens[0].value, column+1, row+1)) # +1 to match the UI positions
         print(len(player.tokens))
