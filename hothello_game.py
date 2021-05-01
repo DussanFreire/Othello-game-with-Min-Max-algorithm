@@ -110,15 +110,17 @@ class Game:
         if not self.out_of_bounds(next_column, next_row):  # VERIFICAR QUE NO SALGA DEL MAPA
             next_token = board.cells[next_row][next_column].token.value
             if next_token == enemy_token_value:
-                while not self.out_of_bounds(next_column, next_row) and (next_token == enemy_token_value or next_token == ally_token_value): 
+                while not self.out_of_bounds(next_column, next_row) and (board.cells[next_row][next_column].token.value == enemy_token_value or board.cells[next_row][next_column].token.value == ally_token_value): 
                     if board.cells[next_row][next_column].token.value == ally_token_value:
                         #data = ((col+1, row+1), (next_column+1, next_row+1), flank_count) #+1 to match the user interface positions
                         flank_pos = [next_column+1, next_row+1]# +1 to match the user interface positions
                         #self.recomended_moves.append(data)
                         return flank_pos, flank_count
-                    else:
+                    elif board.cells[next_row][next_column].token.value == enemy_token_value:
                         flank_count += 1
                         next_column, next_row = self.next_position(direction, next_column, next_row)
+                    else:
+                        return (-1, -1), -1
         return (-1, -1), -1
 
 
@@ -213,6 +215,7 @@ class Game:
             self.make_move(player2)
             board.draw_board()
             game_moves = []
+            self.recomended_moves = []
             
             print(self.game_moves)
 
@@ -246,69 +249,18 @@ if __name__ == "__main__":
     game = Game(board, player1, player2)
     game.play()
 
+#HACER QUE LOS TURNOS DE CADA JUGADOR SE JUEGUEN CORRESPONDIENTEMENTE SEGUN EL QUE TENGA FICHAS NEGRAS.(actualmente empieza el jugador 1 sin importar nada)
+#MEJORAR WHILE DE LA FUNCION "MATCH()", PARA QUE CONTROLE BIEN SI ACABO EL JUEGO O NO.
+
+# REFACTORIZAR FUNCION EXPLORE()
+# MEJORAR PRINTEOS
+
+
+
+
 """ Colors:
         white = "\033[1;37m"
         green = "\033[0;32m"
         yellow = "\033[1;30m"
         brown = "\033[0;33m"
         """
-
-"""    agregar (posicion aliado, posicion del "_" en cuestion, contador)
-    luego verificar si en el siguiente movimiento en misma direccion hay otro aliado
-    si al final nos topamos con un aliado, 
-    REVISAR MIS APUNTES DE IDEAS.  ME DIO SUENIO Y NO SE SI ESTOS PASOS ESCRITOS ESTAN BIEN"""
-
-"""
-    def explore(self, direction, col, row, player):
-        next_column, next_row = self.next_position(direction, col, row)
-        ally_token_value = player.tokens[0].value
-        enemy_token_value  = settings.face_up if  ally_token_value == settings.face_down else settings.face_down # Sera siempre opuesto al ally_token
-        flank_count = 0
-        
-        if next_column > 0 and next_row > 0   and next_column < 8 and next_row < 8:  # VERIFICAR QUE NO SALGA DEL MAPA
-            print(board.cells[next_row][next_column].token.value)
-            if board.cells[next_row][next_column].token.value == enemy_token_value:
-                while board.cells[next_row][next_column].token.value == enemy_token_value or board.cells[next_row][next_column].token.value == ally_token_value: 
-                    if board.cells[next_row][next_column].token.value == ally_token_value:
-                        data = ((col, row), (next_column, next_row), flank_count)
-                        self.recomended_moves.append(data)
-                        return True
-                    else:
-                        flank_count += 1
-                        next_column, next_row = next_position(direction, col, row)
-        return False
-        """
-
-"""
-
-        print("player 1 makes move and his tokens are reduced by 1")
-        print("player 2 makes move and his tokens are reduced by 1")
-        print("moves are registered in each player move list and in the general game_move list")
-        
-        print("if a move is invalid the player has to try another move")
-        print("flanked tokens change their side (character face_up or face_down)")
-        print("game registers and draws the board and all the moves made")
-        print("game move recomendations will be added at the end")
-        """
-
-""" Recursivo no funciona porque es dificil o mas bien sucio, mantener el col y row  que teniamos al inicio de la busqueda
-    
-    def explore(self, direction, col, row, player):
-        next_column, next_row = self.next_position(direction, col, row)
-        ally_token_value = player.tokens[0].value
-        enemy_token_value  = settings.face_up if  ally_token_value == settings.face_down else settings.face_down # Sera siempre opuesto al ally_token
-        flank_count = 0
-        #print(next_row,next_column)
-        if next_column >= 0 and next_row >= 0   and next_column < 8 and next_row < 8:  # VERIFICAR QUE NO SALGA DEL MAPA
-            #print(board.cells[next_row][next_column].token.value)
-            if board.cells[next_row][next_column].token.value == enemy_token_value:
-                flank_count += 1
-                #next_column, next_row = self.next_position(direction, col, row)
-                self.explore(direction, next_column, next_row, player)
-            elif board.cells[next_row][next_column].token.value == ally_token_value:
-                data = ((col, row), (next_column, next_row), flank_count)
-                self.recomended_moves.append(data)
-                return True
-                    
-        return False
-"""
