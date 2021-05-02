@@ -97,7 +97,7 @@ class Game:
     def display_options(self, player, options):
         indice = 1
 
-        print(player.name, "Select a cell to place your token")
+        print(player.name, "Select a cell to place your token",player.token)
         for opt in options:
             print(f"{indice}: row: {opt[0] + 1} col: {opt[1] + 1}")
             indice += 1
@@ -148,9 +148,15 @@ class Game:
 
     def uncheck_possible_moves(self, possible_moves):
         for move in possible_moves:
-            if self.board.cells[move[0][0]][move[0][1]].token == self.settings.new_option_token :
+            if self.board.cells[move[0][0]][move[0][1]].token == self.settings.new_option_token:
                 self.board.cells[move[0][0]][move[0][1]].token = self.settings.empty_token
+
+    def display_results(self):
+        print("Scores:")
+        print(f"Player 1: {self.player1.name}/t Score: {len(self.player1.tokens_on_board)}")
+        print(f"Player 2: {self.player2.name}/t Score: {len(self.player2.tokens_on_board)}")
 
     def play(self):
         self.setup_players()  # Distribute tokens
         self.match()
+        self.display_results()
