@@ -7,7 +7,7 @@ class Board:
         self.settings = settings
         self.cells = None
 
-    def draw_board(self):
+    def draw_board(self, turn_number, response_time):
         numbers = range(1, self.settings.board_size + 1)
         i = 0
         print(self.settings.token_color, "\n")
@@ -21,6 +21,8 @@ class Board:
             print("", numbers[i], "\n")
             i += 1
         print(self.settings.letters_color, "\n")
+        print(f"Turn: {turn_number}\t Response Time of adversary: {response_time} [microseconds]")
+
 
     def create_empty_board(self):
         self.cells = np.array([[Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],

@@ -4,7 +4,6 @@ from player import Player
 from board import Board
 from game import Game
 
-
 if __name__ == "__main__":
     settings = Settings()
     token1 = settings.p1_token
@@ -19,10 +18,6 @@ if __name__ == "__main__":
     player2 = Player("Dussan", settings.p2_token)
     game = Game(board, player1, player2, settings)
     game.play()
-
-# HACER QUE LOS TURNOS DE CADA JUGADOR SE JUEGUEN CORRESPONDIENTEMENTE SEGUN EL QUE TENGA FICHAS NEGRAS.(actualmente
-# empieza el jugador 1 sin importar nada) MEJORAR WHILE DE LA FUNCION "MATCH()", PARA QUE CONTROLE BIEN SI ACABO EL
-# JUEGO O NO.
 
 """ Colors:
         white = "\033[1;37m"

@@ -1,3 +1,6 @@
+import numpy
+import datetime
+
 
 class Game:
     def __init__(self, board, player_1, player_2, settings):
@@ -5,6 +8,14 @@ class Game:
         self.player1 = player_1
         self.player2 = player_2
         self.settings = settings
+        self.p1_time_in_each_move = []
+        self.p2_time_in_each_move = []
+
+    def append_time(self, player, time):
+        if player == self.player1:
+            self.p1_time_in_each_move.append(time)
+        else:
+            self.p2_time_in_each_move.append(time)
 
     def setup_players(self):
         self.player1.tokens_on_board.append((3, 3))
@@ -91,7 +102,7 @@ class Game:
     def display_options(self, player, options):
         indice = 1
 
-        print(player.name, "Select a cell to place your token",player.token)
+        print(player.name, "Select a cell to place your token", player.token)
         for opt in options:
             print(f"{indice}: row: {opt[0] + 1} col: {opt[1] + 1}")
             indice += 1
@@ -114,7 +125,11 @@ class Game:
         unique_opt = self.unique(values)
         while True:
             self.display_options(player, unique_opt)
-            option_decided = int(input())
+            # option_decided = int(input())
+
+            option_decided = numpy.random.randint(1, len(unique_opt) + 1)
+
+            print("random choice:", option_decided)
 
             if option_decided in range(1, len(unique_opt) + 1):
                 break
@@ -122,30 +137,52 @@ class Game:
         for option in filter(lambda op: op[0] == unique_opt[option_decided - 1], possible_moves):
             self.apply_move(player, option, player_enemy)
 
-
     def match(self):
+        turn_number = 1
         player_on_turn = self.player2
         player_enemy = self.player1
         no_more_moves = False
+        response_time = None
         while True:
+            start = datetime.datetime.now().microsecond
+
             possible_moves = self.get_possible_moves(player_on_turn)
             self.mark_possible_moves(possible_moves)
-            self.board.draw_board()
+            self.board.draw_board(turn_number, response_time)
 
-            if len(possible_moves) <= 0:
+            if len(possible_moves) <= 0 and no_more_moves == False:
+                # Stop Time
+                now = datetime.datetime.now().microsecond
+                response_time = now - start if now - start >= 0 else 0
+                self.append_time(player_on_turn, response_time)
+
+                # Change player
+                player_enemy = player_on_turn
+                player_on_turn = self.player1 if player_on_turn != self.player1 else self.player2
+
                 no_more_moves = True
+                turn_number += 1
                 continue
 
             if len(possible_moves) <= 0 and no_more_moves:
                 break
 
             self.make_move(player_on_turn, possible_moves, player_enemy)
-            # self.board.draw_board()
+
+            # Stop Time
+            now = datetime.datetime.now().microsecond
+            response_time = now - start if now - start >= 0 else 0
+            self.append_time(player_on_turn, response_time)
+
+            # Prepare board for the next turn
             self.uncheck_possible_moves(possible_moves)
-            # self.board.draw_board()
+
+            # Change player
             player_enemy = player_on_turn
-            no_more_moves = False
             player_on_turn = self.player1 if player_on_turn != self.player1 else self.player2
+
+            no_more_moves = False
+            turn_number += 1
 
     def mark_possible_moves(self, possible_moves):
         for move in possible_moves:
@@ -160,12 +197,18 @@ class Game:
         p1_score = len(self.player1.tokens_on_board)
         p2_score = len(self.player2.tokens_on_board)
         print("Scores:")
-        print(f"Player 1: {self.player1.name}/t Score: {p1_score}")
-        print(f"Player 2: {self.player2.name}/t Score: {p2_score}")
-        print(f"-> WINNER: {self.player1.name if p1_score > p2_score else self.player2.name if p2_score > p1_score else 'TIE'} ")
+        print(
+            f"Player: {self.player1.name}\t Score: {p1_score}\t Time response average: {sum(self.p1_time_in_each_move) / len(self.p1_time_in_each_move)} [microseconds]")
+        # print(f"Player 1: Time in each turn: {self.p1_time_in_each_move}")
+
+        print(
+            f"Player: {self.player2.name}\t Score: {p2_score}\t Time response average: {sum(self.p2_time_in_each_move) / len(self.p2_time_in_each_move)} [microseconds]")
+        # print(f"Player 2: Time in each turn: {self.p2_time_in_each_move}")
+
+        print(
+            f"-> WINNER: {self.player1.name if p1_score > p2_score else self.player2.name if p2_score > p1_score else 'TIE'} ")
 
     def play(self):
         self.setup_players()  # Distribute tokens
         self.match()
         self.display_results()
-
