@@ -1,4 +1,4 @@
-# In construction ...
+# Othello game with Min-Max algorithm
 
 ## Table of contents
 
@@ -41,16 +41,29 @@ x
 
 ## Heuristic function
 
+We defined a variety of heuristic functions to be used in our Min-Max algorithm for the "Eval()" function.
 
+The heuristic functions we defined are :
 
+### Dummy heuristic
 
+This dummy heristic consists of making a move which flanks more enemy tokens.
 
-## Results
+For Example:
+
+If we reach a "Cut off" state and we have a move #1 which flanks 2 enemy tokens and a move #2 whic flanks 4 enemy tokens, the next move will be the move #2 because it has a bigger number of flanks done.
+
+## Strategy heuristic
 
 x
 
+## Results
+
+### Average decition making time from the AI
+
+The average time the AI takes to make a move is:  ...
 
 
 ## Conclution
 
-x
+We have observed that...
