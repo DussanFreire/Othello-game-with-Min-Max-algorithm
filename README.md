@@ -4,7 +4,7 @@
 
 - [Problem description](#problem-description)
 - [Solution description](#solution-description)
-- [Heuristic function](#heuristic-function)
+- [Heuristic functions](#heuristic-functions)
 - [Results](#results)
 - [Conclution](#conclution)
 
@@ -39,7 +39,7 @@ x
 
 
 
-## Heuristic function
+## Heuristic functions
 
 We defined a variety of heuristic functions to be used in our Min-Max algorithm for the "Eval()" function.
 
