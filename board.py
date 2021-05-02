@@ -17,6 +17,8 @@ class Board:
 
         for row in self.cells:
             for cell in row:
+                color = self.settings.p1_color if cell.token == self.settings.p1_token else self.settings.p2_color if cell.token == self.settings.p2_token else self.settings.empty_token_color
+                print(color, end="")
                 print(cell.token, end="     ")
             print("", numbers[i], "\n")
             i += 1
@@ -26,10 +28,10 @@ class Board:
 
     def create_empty_board(self):
         self.cells = np.array([[Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
-                          [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
-                          [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
-                          [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.p1_token), Cell(self.settings.p2_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
-                          [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.p2_token), Cell(self.settings.p1_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
-                          [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
-                          [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
-                          [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)]])
+                            [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
+                            [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
+                            [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.p1_token), Cell(self.settings.p2_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
+                            [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.p2_token), Cell(self.settings.p1_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
+                            [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
+                            [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)],
+                            [Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token), Cell(self.settings.empty_token)]])
