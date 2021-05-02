@@ -114,6 +114,7 @@ class Game:
             current_pos = (row, col)
             player.tokens_on_board.append(current_pos)
             if current_pos == possible_move[0]:
+                player.tokens_on_board = self.unique(player.tokens_on_board)
                 break
             player_enemy.tokens_on_board.remove(current_pos)
 
