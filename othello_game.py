@@ -1,31 +1,36 @@
-import numpy as np
-from board import Board
 from settings import Settings
-
-
-class Player:
-    def __init__(self, name, settings):
-        self.name = name
-        self.settings = settings
-
-
-class Token:
-    def __init__(self, face_side):
-        self.face_side = face_side
-
-
-class Cell(object):
-    pass
-    # token
-    # def __init__(self, token):
-    #    token = token
+from heuristiFunctionCollection import HeuristicFunctionCollection
+from player import Player
+from board import Board
+from game import Game
 
 
 if __name__ == "__main__":
     settings = Settings()
-    token1 = Token(settings.face_up)
-    token2 = Token(settings.face_down)
+    token1 = settings.p1_token
+    token2 = settings.p2_token
+
+    settings.heuristic = HeuristicFunctionCollection().heuristic_1()
+    board = Board(settings)
+    board.create_empty_board()
+    # os.system("cls")   NECESARIO.  Si los colors no funcionan hay que hacer un cls
+
+    player1 = Player("Diego", settings.p1_token)
+    player2 = Player("Dussan", settings.p2_token)
+    game = Game(board, player1, player2, settings)
+    game.play()
+
+# HACER QUE LOS TURNOS DE CADA JUGADOR SE JUEGUEN CORRESPONDIENTEMENTE SEGUN EL QUE TENGA FICHAS NEGRAS.(actualmente
+# empieza el jugador 1 sin importar nada) MEJORAR WHILE DE LA FUNCION "MATCH()", PARA QUE CONTROLE BIEN SI ACABO EL
+# JUEGO O NO.
+
+# REFACTORIZAR FUNCION EXPLORE()
+# MEJORAR PRINTEOS
 
 
-    settings.heuristic = HeuristicFunction().heuristic1
-    board = Board(cells)
+""" Colors:
+        white = "\033[1;37m"
+        green = "\033[0;32m"
+        yellow = "\033[1;30m"
+        brown = "\033[0;33m"
+        """

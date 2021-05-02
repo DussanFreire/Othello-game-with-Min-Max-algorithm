@@ -2,7 +2,13 @@
 
 class Settings:
     def __init__(self):
-        self.face_up = 'O'
-        self.face_down = 'X'
+        self.p1_token = 'O'
+        self.p2_token = 'X'
+        self.empty_token = '_'
         self.heuristic = None
-        self.dimension = 8
+        self.token_color = "\033[0;37m"
+        self.letters_color = "\033[0;33m"
+        self.board_size = 8
+        self.letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        self.actions = ["UP", "UP-RIGHT", "RIGHT", "DOWN-RIGHT", "DOWN", "LEFT-DOWN", "LEFT", "LEFT-UP"]
+

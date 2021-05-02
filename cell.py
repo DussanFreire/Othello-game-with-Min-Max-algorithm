@@ -1,5 +1,4 @@
 class Cell:
-    def __init__(self):
-        self.state = None
-        self.taken_by = None
-        self.value = None
+    def __init__(self, token):
+        self.token = token
+        self.value_state = None
