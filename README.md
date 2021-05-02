@@ -53,7 +53,7 @@ For Example:
 
 If we reach a "Cut off" state and we have a move #1 which flanks 2 enemy tokens and a move #2 whic flanks 4 enemy tokens, the next move will be the move #2 because it has a bigger number of flanks done.
 
-## Strategy heuristic
+### Strategy heuristic
 
 x
 
