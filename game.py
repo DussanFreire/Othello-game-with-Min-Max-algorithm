@@ -130,6 +130,7 @@ class Game:
         for option in filter(lambda op: op[0] == unique_opt[option_decided - 1], possible_moves):
             self.apply_move(player, option, player_enemy)
 
+
     def match(self):
         player_on_turn = self.player2
         player_enemy = self.player1
