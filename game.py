@@ -78,6 +78,9 @@ class Game:
                     if self.board.cells[row][col].token == self.settings.empty_token:
                         break
 
+                    if self.board.cells[row][col].token == player.token:
+                        break
+
                     if self.board.cells[row][col].token == enemy_token:
                         enemy_found = True
                         col, row = self.get_next_position(action, col, row)
@@ -115,7 +118,7 @@ class Game:
             player_enemy.tokens_on_board.remove(current_pos)
 
     def make_move(self, player, possible_moves, player_enemy):
-        values = map(lambda p: p[0], possible_moves)
+        values = list(map(lambda p: p[0], possible_moves))
         unique_opt = self.unique(values)
         while True:
             self.display_options(player, unique_opt)
