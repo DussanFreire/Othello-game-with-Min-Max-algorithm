@@ -87,11 +87,20 @@ class Game:
                     enemy_found = False
         return possible_moves
 
+    def unique(self, list1):
+        unique_list = []
+        for x in list1:
+            if x not in unique_list:
+                unique_list.append(x)
+        return unique_list
+
     def display_options(self, player, options):
         indice = 1
+        values = map(lambda p: p[0], options)
+        unique_opt = self.unique(values)
         print(player.name, "Select a cell to place your token")
-        for opt in options:
-            print(f"{indice}: row: {opt[0][0] + 1} col: {opt[0][1] + 1}")
+        for opt in unique_opt:
+            print(f"{indice}: row: {opt[0] + 1} col: {opt[1] + 1}")
             indice += 1
 
     def apply_move(self, player, possible_move, player_enemy):
@@ -107,12 +116,7 @@ class Game:
             player_enemy.tokens_on_board.remove(current_pos)
 
     def make_move(self, player, possible_moves, player_enemy):
-        accepted = False
-        row = None
-        column = None
-        flanks = None
-        option_decided = None
-        while not accepted:
+        while True:
             self.display_options(player, possible_moves)
             option_decided = int(input())
             if option_decided in range(1, len(possible_moves) + 1):
