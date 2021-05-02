@@ -96,10 +96,9 @@ class Game:
 
     def display_options(self, player, options):
         indice = 1
-        values = map(lambda p: p[0], options)
-        unique_opt = self.unique(values)
+
         print(player.name, "Select a cell to place your token")
-        for opt in unique_opt:
+        for opt in options:
             print(f"{indice}: row: {opt[0] + 1} col: {opt[1] + 1}")
             indice += 1
 
@@ -116,13 +115,16 @@ class Game:
             player_enemy.tokens_on_board.remove(current_pos)
 
     def make_move(self, player, possible_moves, player_enemy):
+        values = map(lambda p: p[0], possible_moves)
+        unique_opt = self.unique(values)
         while True:
-            self.display_options(player, possible_moves)
+            self.display_options(player, unique_opt)
             option_decided = int(input())
-            if option_decided in range(1, len(possible_moves) + 1):
+            if option_decided in range(1, len(unique_opt) + 1):
                 break
             print("Choose one of the options please!")
-        self.apply_move(player, possible_moves[option_decided - 1], player_enemy)
+        for option in filter(lambda op: op[0] == unique_opt[option_decided - 1], possible_moves):
+            self.apply_move(player, option, player_enemy)
 
     def match(self):
         player_on_turn = self.player2
@@ -134,19 +136,19 @@ class Game:
             if len(possible_moves) <= 0:
                 break
             self.make_move(player_on_turn, possible_moves, player_enemy)
-            self.board.draw_board()
+            # self.board.draw_board()
             self.uncheck_possible_moves(possible_moves)
-            self.board.draw_board()
+            # self.board.draw_board()
             player_enemy = player_on_turn
             player_on_turn = self.player1 if player_on_turn != self.player1 else self.player2
 
     def mark_possible_moves(self, possible_moves):
         for move in possible_moves:
-            self.board.cells[move[0][0]][move[0][1]].token = "*"
+            self.board.cells[move[0][0]][move[0][1]].token = self.settings.new_option_token
 
     def uncheck_possible_moves(self, possible_moves):
         for move in possible_moves:
-            if self.board.cells[move[0][0]][move[0][1]].token == "*":
+            if self.board.cells[move[0][0]][move[0][1]].token == self.settings.new_option_token :
                 self.board.cells[move[0][0]][move[0][1]].token = self.settings.empty_token
 
     def play(self):
