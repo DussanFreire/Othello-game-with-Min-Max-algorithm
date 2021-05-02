@@ -1,3 +1,4 @@
+
 class Game:
     def __init__(self, board, player_1, player_2, settings):
         self.board = board
@@ -51,7 +52,7 @@ class Game:
         return next_column, next_row
 
     def is_out_of_bounds(self, col, row):
-        return col < 0 or row < 0 or col >= self.settings.board_size or row >= col >= self.settings.board_size
+        return col < 0 or row < 0 or col >= self.settings.board_size or row >= self.settings.board_size or col >= self.settings.board_size
 
     def get_possible_moves(self, player):
         possible_moves = []
@@ -124,6 +125,7 @@ class Game:
         while True:
             self.display_options(player, unique_opt)
             option_decided = int(input())
+
             if option_decided in range(1, len(unique_opt) + 1):
                 break
             print("Choose one of the options please!")
@@ -165,3 +167,4 @@ class Game:
         self.setup_players()  # Distribute tokens
         self.match()
         self.display_results()
+
