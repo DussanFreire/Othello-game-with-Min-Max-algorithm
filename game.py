@@ -36,6 +36,7 @@ class Game:
         player_enemy = self.player1
         no_more_moves = False
         response_time = None
+        computer_turn = False
         while True:
             start = datetime.datetime.now().microsecond
 
@@ -52,12 +53,13 @@ class Game:
 
                 no_more_moves = True
                 turn_number += 1
+                computer_turn = not computer_turn
                 continue
 
             if len(possible_moves) <= 0 and no_more_moves:
                 break
-
-            self.moves_manager.make_move(player_on_turn, possible_moves, player_enemy)
+            #make move
+            self.moves_manager.make_move(player_on_turn, possible_moves, player_enemy, computer_turn)
 
             # Stop Time
             self.append_time(player_on_turn, datetime.datetime.now().microsecond, start)
@@ -67,7 +69,7 @@ class Game:
 
             # Change player
             player_on_turn, player_enemy = self.change_turn_player(player_on_turn)
-
+            computer_turn = not computer_turn
             no_more_moves = False
             turn_number += 1
 

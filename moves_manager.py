@@ -110,16 +110,17 @@ class MovesManager:
                 break
             player_enemy.tokens_on_board.remove(current_pos)
 
-    def make_move(self, player, possible_moves, player_enemy):
+    def make_move(self, player, possible_moves, player_enemy, computer_turn):
         values = list(map(lambda p: p[0], possible_moves))
         unique_opt = unique(values)
         while True:
             display_options(player, unique_opt)
-            # option_decided = int(input())
+            if computer_turn:
+                option_decided = numpy.random.randint(1, len(unique_opt) + 1)
+            else:
+                option_decided = int(input())
 
-            option_decided = numpy.random.randint(1, len(unique_opt) + 1)
-
-            print("random choice:", option_decided)
+            print("choice:", option_decided)
 
             if option_decided in range(1, len(unique_opt) + 1):
                 break
