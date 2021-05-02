@@ -5,22 +5,12 @@ class Game:
         self.player1 = player_1
         self.player2 = player_2
         self.settings = settings
-        self.game_moves = []  # List that contains all the moves made by each player
-        self.recommended_moves = []  # [((actual_pos), (flank_ally_position), (flanked_enemies_counter))]
 
     def setup_players(self):
-        # print("Who will start?", "\n1) Player1 \n2) Player2 \nchoose one: ")
-        # selection = int(input())
-
-        # token1 = self.settings.p1_token if selection == 1 else self.settings.p2_token
-        # token2 = self.settings.p2_token if selection == 1 else self.settings.p1_token
         self.player1.tokens_on_board.append((3, 3))
         self.player1.tokens_on_board.append((4, 4))
         self.player2.tokens_on_board.append((3, 4))
         self.player2.tokens_on_board.append((4, 3))
-        for i in range(32):
-            self.player1.tokens.append(self.settings.p1_token)
-            self.player2.tokens.append(self.settings.p2_token)
 
     def get_next_position(self, action, col, row):
         next_column = None
@@ -136,17 +126,25 @@ class Game:
     def match(self):
         player_on_turn = self.player2
         player_enemy = self.player1
-        while len(player_on_turn.tokens) > 0:
+        no_more_moves = False
+        while True:
             possible_moves = self.get_possible_moves(player_on_turn)
             self.mark_possible_moves(possible_moves)
             self.board.draw_board()
+
             if len(possible_moves) <= 0:
+                no_more_moves = True
+                continue
+
+            if len(possible_moves) <= 0 and no_more_moves:
                 break
+
             self.make_move(player_on_turn, possible_moves, player_enemy)
             # self.board.draw_board()
             self.uncheck_possible_moves(possible_moves)
             # self.board.draw_board()
             player_enemy = player_on_turn
+            no_more_moves = False
             player_on_turn = self.player1 if player_on_turn != self.player1 else self.player2
 
     def mark_possible_moves(self, possible_moves):
@@ -159,9 +157,12 @@ class Game:
                 self.board.cells[move[0][0]][move[0][1]].token = self.settings.empty_token
 
     def display_results(self):
+        p1_score = len(self.player1.tokens_on_board)
+        p2_score = len(self.player2.tokens_on_board)
         print("Scores:")
-        print(f"Player 1: {self.player1.name}/t Score: {len(self.player1.tokens_on_board)}")
-        print(f"Player 2: {self.player2.name}/t Score: {len(self.player2.tokens_on_board)}")
+        print(f"Player 1: {self.player1.name}/t Score: {p1_score}")
+        print(f"Player 2: {self.player2.name}/t Score: {p2_score}")
+        print(f"-> WINNER: {self.player1.name if p1_score > p2_score else self.player2.name if p2_score > p1_score else 'TIE'} ")
 
     def play(self):
         self.setup_players()  # Distribute tokens

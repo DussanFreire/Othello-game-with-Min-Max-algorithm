@@ -24,10 +24,6 @@ if __name__ == "__main__":
 # empieza el jugador 1 sin importar nada) MEJORAR WHILE DE LA FUNCION "MATCH()", PARA QUE CONTROLE BIEN SI ACABO EL
 # JUEGO O NO.
 
-# REFACTORIZAR FUNCION EXPLORE()
-# MEJORAR PRINTEOS
-
-
 """ Colors:
         white = "\033[1;37m"
         green = "\033[0;32m"
