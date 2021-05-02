@@ -1,4 +1,4 @@
 
 class HeuristicFunctionCollection:
-    def heuristic_1(self):
+    def highest_score(self, state):
         print("Nice othello heuristic")

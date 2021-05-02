@@ -1,5 +1,6 @@
-import numpy
 import datetime
+from adversarial_search import AdversarialSearch
+from moves_manager import MovesManager
 
 
 class Game:
@@ -10,12 +11,14 @@ class Game:
         self.settings = settings
         self.p1_time_in_each_move = []
         self.p2_time_in_each_move = []
+        self.moves_manager = MovesManager(settings, board)
 
-    def append_time(self, player, time):
+    def append_time(self, player, stop, start):
+        response_time = stop - start if stop - start >= 0 else 0
         if player == self.player1:
-            self.p1_time_in_each_move.append(time)
+            self.p1_time_in_each_move.append(response_time)
         else:
-            self.p2_time_in_each_move.append(time)
+            self.p2_time_in_each_move.append(response_time)
 
     def setup_players(self):
         self.player1.tokens_on_board.append((3, 3))
@@ -23,121 +26,11 @@ class Game:
         self.player2.tokens_on_board.append((3, 4))
         self.player2.tokens_on_board.append((4, 3))
 
-    def get_next_position(self, action, col, row):
-        next_column = None
-        next_row = None
-        if action == "UP":
-            next_row = row - 1
-            next_column = col
-        if action == "UP-RIGHT":
-            next_row = row - 1
-            next_column = col + 1
-        if action == "RIGHT":
-            next_row = row
-            next_column = col + 1
-        if action == "DOWN-RIGHT":
-            next_row = row + 1
-            next_column = col + 1
-        if action == "DOWN":
-            next_row = row + 1
-            next_column = col
-        if action == "LEFT-DOWN":
-            next_row = row + 1
-            next_column = col - 1
-        if action == "LEFT":
-            next_row = row
-            next_column = col - 1
-        if action == "LEFT-UP":
-            next_row = row - 1
-            next_column = col - 1
-        return next_column, next_row
-
-    def is_out_of_bounds(self, col, row):
-        return col < 0 or row < 0 or col >= self.settings.board_size or row >= self.settings.board_size or col >= self.settings.board_size
-
-    def get_possible_moves(self, player):
-        possible_moves = []
-        enemy_token = self.player2.token if player.token == self.player1.token else self.player1.token
-        for token_pos in player.tokens_on_board:
-            for action in self.settings.actions:
-                enemy_found = False
-                first_iteration = True
-                col, row = self.get_next_position(action, token_pos[1], token_pos[0])
-                while True:
-
-                    if self.is_out_of_bounds(col, row):
-                        break
-
-                    if first_iteration:
-                        if self.board.cells[row][col].token != enemy_token:
-                            break
-                        first_iteration = False
-
-                    if self.board.cells[row][col].token == self.settings.empty_token and enemy_found:
-                        possible_moves.append([(row, col), (token_pos[0], token_pos[1]), action])
-                        break
-
-                    if self.board.cells[row][col].token == self.settings.empty_token:
-                        break
-
-                    if self.board.cells[row][col].token == player.token:
-                        break
-
-                    if self.board.cells[row][col].token == enemy_token:
-                        enemy_found = True
-                        col, row = self.get_next_position(action, col, row)
-                        continue
-
-                    col, row = self.get_next_position(action, col, row)
-                    enemy_found = False
-        return possible_moves
-
-    def unique(self, list1):
-        unique_list = []
-        for x in list1:
-            if x not in unique_list:
-                unique_list.append(x)
-        return unique_list
-
-    def display_options(self, player, options):
-        indice = 1
-
-        print(player.name, "Select a cell to place your token", player.token)
-        for opt in options:
-            print(f"{indice}: row: {opt[0] + 1} col: {opt[1] + 1}")
-            indice += 1
-
-    def apply_move(self, player, possible_move, player_enemy):
-        current_pos = possible_move[1]
-        action = possible_move[2]
-        while True:
-            col, row = self.get_next_position(action, current_pos[1], current_pos[0])
-            self.board.cells[row][col].token = player.token
-            current_pos = (row, col)
-            player.tokens_on_board.append(current_pos)
-            if current_pos == possible_move[0]:
-                player.tokens_on_board = self.unique(player.tokens_on_board)
-                break
-            player_enemy.tokens_on_board.remove(current_pos)
-
-    def make_move(self, player, possible_moves, player_enemy):
-        values = list(map(lambda p: p[0], possible_moves))
-        unique_opt = self.unique(values)
-        while True:
-            self.display_options(player, unique_opt)
-            # option_decided = int(input())
-
-            option_decided = numpy.random.randint(1, len(unique_opt) + 1)
-
-            print("random choice:", option_decided)
-
-            if option_decided in range(1, len(unique_opt) + 1):
-                break
-            print("Choose one of the options please!")
-        for option in filter(lambda op: op[0] == unique_opt[option_decided - 1], possible_moves):
-            self.apply_move(player, option, player_enemy)
+    def change_turn_player(self, player_on_turn):
+        return (self.player1, self.player2) if player_on_turn != self.player1 else (self.player2, self.player1)
 
     def match(self):
+        adversarial_search = AdversarialSearch(self.settings)
         turn_number = 1
         player_on_turn = self.player2
         player_enemy = self.player1
@@ -146,19 +39,16 @@ class Game:
         while True:
             start = datetime.datetime.now().microsecond
 
-            possible_moves = self.get_possible_moves(player_on_turn)
+            possible_moves = self.moves_manager.get_possible_moves(player_on_turn)
             self.mark_possible_moves(possible_moves)
             self.board.draw_board(turn_number, response_time)
 
             if len(possible_moves) <= 0 and no_more_moves == False:
                 # Stop Time
-                now = datetime.datetime.now().microsecond
-                response_time = now - start if now - start >= 0 else 0
-                self.append_time(player_on_turn, response_time)
+                self.append_time(player_on_turn, datetime.datetime.now().microsecond, start)
 
                 # Change player
-                player_enemy = player_on_turn
-                player_on_turn = self.player1 if player_on_turn != self.player1 else self.player2
+                player_on_turn, player_enemy = self.change_turn_player(player_on_turn)
 
                 no_more_moves = True
                 turn_number += 1
@@ -167,19 +57,16 @@ class Game:
             if len(possible_moves) <= 0 and no_more_moves:
                 break
 
-            self.make_move(player_on_turn, possible_moves, player_enemy)
+            self.moves_manager.make_move(player_on_turn, possible_moves, player_enemy)
 
             # Stop Time
-            now = datetime.datetime.now().microsecond
-            response_time = now - start if now - start >= 0 else 0
-            self.append_time(player_on_turn, response_time)
+            self.append_time(player_on_turn, datetime.datetime.now().microsecond, start)
 
             # Prepare board for the next turn
             self.uncheck_possible_moves(possible_moves)
 
             # Change player
-            player_enemy = player_on_turn
-            player_on_turn = self.player1 if player_on_turn != self.player1 else self.player2
+            player_on_turn, player_enemy = self.change_turn_player(player_on_turn)
 
             no_more_moves = False
             turn_number += 1
@@ -210,5 +97,8 @@ class Game:
 
     def play(self):
         self.setup_players()  # Distribute tokens
+        self.moves_manager.player1 = self.player1
+        self.moves_manager.player2 = self.player2
+
         self.match()
         self.display_results()
