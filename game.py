@@ -2,7 +2,6 @@ import datetime
 from adversarial_search import AdversarialSearch
 from moves_manager import MovesManager
 
-
 class Game:
     def __init__(self, board, player_1, player_2, settings):
         self.board = board
@@ -19,6 +18,7 @@ class Game:
             self.p1_time_in_each_move.append(response_time)
         else:
             self.p2_time_in_each_move.append(response_time)
+        return response_time
 
     def setup_players(self):
         self.player1.tokens_on_board.append((3, 3))
@@ -46,7 +46,7 @@ class Game:
 
             if len(possible_moves) <= 0 and no_more_moves == False:
                 # Stop Time
-                self.append_time(player_on_turn, datetime.datetime.now().microsecond, start)
+                response_time = self.append_time(player_on_turn, datetime.datetime.now().microsecond, start)
 
                 # Change player
                 player_on_turn, player_enemy = self.change_turn_player(player_on_turn)
@@ -62,7 +62,7 @@ class Game:
             self.moves_manager.make_move(player_on_turn, possible_moves, player_enemy, computer_turn)
 
             # Stop Time
-            self.append_time(player_on_turn, datetime.datetime.now().microsecond, start)
+            response_time = self.append_time(player_on_turn, datetime.datetime.now().microsecond, start)
 
             # Prepare board for the next turn
             self.uncheck_possible_moves(possible_moves)
@@ -75,12 +75,12 @@ class Game:
 
     def mark_possible_moves(self, possible_moves):
         for move in possible_moves:
-            self.board.cells[move[0][0]][move[0][1]].token = self.settings.new_option_token
+            self.board.cells[move.final_pos[0]][move.final_pos[1]].token = self.settings.new_option_token
 
     def uncheck_possible_moves(self, possible_moves):
         for move in possible_moves:
-            if self.board.cells[move[0][0]][move[0][1]].token == self.settings.new_option_token:
-                self.board.cells[move[0][0]][move[0][1]].token = self.settings.empty_token
+            if self.board.cells[move.final_pos[0]][move.final_pos[1]].token == self.settings.new_option_token:
+                self.board.cells[move.final_pos[0]][move.final_pos[1]].token = self.settings.empty_token
 
     def display_results(self):
         p1_score = len(self.player1.tokens_on_board)

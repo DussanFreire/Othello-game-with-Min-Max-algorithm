@@ -1,4 +1,5 @@
 import numpy
+from move import Move
 
 
 def get_next_position(action, col, row):
@@ -78,7 +79,7 @@ class MovesManager:
                         first_iteration = False
 
                     if self.board.cells[row][col].token == self.settings.empty_token and enemy_found:
-                        possible_moves.append([(row, col), (token_pos[0], token_pos[1]), action, won_cells])
+                        possible_moves.append(Move((row, col), (token_pos[0], token_pos[1]), action, won_cells))
                         break
 
                     if self.board.cells[row][col].token == self.settings.empty_token:
@@ -98,20 +99,19 @@ class MovesManager:
         return possible_moves
 
     def _apply_move(self, player, possible_move, player_enemy):
-        current_pos = possible_move[1]
-        action = possible_move[2]
+        current_pos = possible_move.initial_pos
         while True:
-            col, row = get_next_position(action, current_pos[1], current_pos[0])
+            col, row = get_next_position(possible_move.action, current_pos[1], current_pos[0])
             self.board.cells[row][col].token = player.token
             current_pos = (row, col)
             player.tokens_on_board.append(current_pos)
-            if current_pos == possible_move[0]:
+            if current_pos == possible_move.final_pos:
                 player.tokens_on_board = unique(player.tokens_on_board)
                 break
             player_enemy.tokens_on_board.remove(current_pos)
 
     def make_move(self, player, possible_moves, player_enemy, computer_turn):
-        values = list(map(lambda p: p[0], possible_moves))
+        values = list(map(lambda m: m.final_pos, possible_moves))
         unique_opt = unique(values)
         while True:
             display_options(player, unique_opt)
@@ -125,5 +125,5 @@ class MovesManager:
             if option_decided in range(1, len(unique_opt) + 1):
                 break
             print("Choose one of the options please!")
-        for option in filter(lambda op: op[0] == unique_opt[option_decided - 1], possible_moves):
+        for option in filter(lambda op: op.final_pos == unique_opt[option_decided - 1], possible_moves):
             self._apply_move(player, option, player_enemy)
