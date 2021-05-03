@@ -1,24 +1,17 @@
-def unique(list1):
-    unique_list = []
-    for x in list1:
-        if x not in unique_list:
-            unique_list.append(x)
-    return unique_list
+from move_finder_helper import MoveFinderHelper
 
 
 class HeuristicFunctionCollection:
 
     @staticmethod
-    def highest_score(state, moves_manager, current_player):
+    def highest_score(state, settings, current_player):
         # prepare
-        enemy_player = moves_manager.player1 if moves_manager.player1 != current_player else moves_manager.player2
-        moves_manager.board = state
-        possible_moves = moves_manager.get_possible_moves(current_player)
+        possible_moves = MoveFinderHelper.get_possible_moves(current_player, state, settings)
         value_list = []
 
         # work
         values = list(map(lambda m: m.final_pos, possible_moves))
-        unique_opt = unique(values)
+        unique_opt = MoveFinderHelper.get_unique_values(values)
 
         for index in range(0, len(unique_opt)):
             winnable_cells = 0
