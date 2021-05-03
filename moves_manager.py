@@ -1,7 +1,4 @@
-import numpy
-from move import Move
 from adversarial_search import AdversarialSearch
-from copy import copy
 from move_finder_helper import MoveFinderHelper
 
 
@@ -20,7 +17,6 @@ class MovesManager:
         self.player2 = None
         self.settings = settings
         self.board = board
-        self.adversarial_search = AdversarialSearch(self.settings, copy(self))
 
     def _is_out_of_bounds(self, col, row):
         return col < 0 or row < 0 or col >= self.settings.board_size or row >= self.settings.board_size or col >= self.settings.board_size
@@ -46,7 +42,8 @@ class MovesManager:
         while True:
             display_options(player, unique_opt)
             if computer_turn:
-                option_decided = numpy.random.randint(1, len(unique_opt) + 1)
+                # option_decided = numpy.random.randint(1, len(unique_opt) + 1)
+                option_decided = AdversarialSearch.min_max_with_depth(player, self.board, self.settings)
             else:
                 option_decided = int(input())
 
