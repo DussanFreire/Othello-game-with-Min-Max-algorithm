@@ -2,44 +2,7 @@ import numpy
 from move import Move
 from adversarial_search import AdversarialSearch
 from copy import copy
-
-
-def get_next_position(action, col, row):
-    next_column = None
-    next_row = None
-    if action == "UP":
-        next_row = row - 1
-        next_column = col
-    if action == "UP-RIGHT":
-        next_row = row - 1
-        next_column = col + 1
-    if action == "RIGHT":
-        next_row = row
-        next_column = col + 1
-    if action == "DOWN-RIGHT":
-        next_row = row + 1
-        next_column = col + 1
-    if action == "DOWN":
-        next_row = row + 1
-        next_column = col
-    if action == "LEFT-DOWN":
-        next_row = row + 1
-        next_column = col - 1
-    if action == "LEFT":
-        next_row = row
-        next_column = col - 1
-    if action == "LEFT-UP":
-        next_row = row - 1
-        next_column = col - 1
-    return next_column, next_row
-
-
-def unique(list1):
-    unique_list = []
-    for x in list1:
-        if x not in unique_list:
-            unique_list.append(x)
-    return unique_list
+from move_finder_helper import MoveFinderHelper
 
 
 def display_options(player, options):
@@ -63,59 +26,23 @@ class MovesManager:
         return col < 0 or row < 0 or col >= self.settings.board_size or row >= self.settings.board_size or col >= self.settings.board_size
 
     def get_possible_moves(self, player):
-        possible_moves = []
-        enemy_token = self.player2.token if player.token == self.player1.token else self.player1.token
-        for token_pos in player.tokens_on_board:
-            for action in self.settings.actions:
-                enemy_found = False
-                first_iteration = True
-                winnable_cells = 0
-                col, row = get_next_position(action, token_pos[1], token_pos[0])
-                while True:
-
-                    if self._is_out_of_bounds(col, row):
-                        break
-
-                    if first_iteration:
-                        if self.board.cells[row][col].token != enemy_token:
-                            break
-                        first_iteration = False
-
-                    if self.board.cells[row][col].token == self.settings.empty_token and enemy_found:
-                        possible_moves.append(Move((row, col), (token_pos[0], token_pos[1]), action, winnable_cells))
-                        break
-
-                    if self.board.cells[row][col].token == self.settings.empty_token:
-                        break
-
-                    if self.board.cells[row][col].token == player.token:
-                        break
-
-                    if self.board.cells[row][col].token == enemy_token:
-                        enemy_found = True
-                        winnable_cells += 1
-                        col, row = get_next_position(action, col, row)
-                        continue
-
-                    col, row = get_next_position(action, col, row)
-                    enemy_found = False
-        return possible_moves
+        return MoveFinderHelper.get_possible_moves(player, self.board, self.settings)
 
     def _apply_move(self, player, possible_move, player_enemy):
         current_pos = possible_move.initial_pos
         while True:
-            col, row = get_next_position(possible_move.action, current_pos[1], current_pos[0])
+            col, row = MoveFinderHelper.get_next_position(possible_move.action, current_pos[1], current_pos[0])
             self.board.cells[row][col].token = player.token
             current_pos = (row, col)
             player.tokens_on_board.append(current_pos)
             if current_pos == possible_move.final_pos:
-                player.tokens_on_board = unique(player.tokens_on_board)
+                player.tokens_on_board = MoveFinderHelper.get_unique_values(player.tokens_on_board)
                 break
             player_enemy.tokens_on_board.remove(current_pos)
 
     def make_move(self, player, possible_moves, player_enemy, computer_turn):
         values = list(map(lambda m: m.final_pos, possible_moves))
-        unique_opt = unique(values)
+        unique_opt = MoveFinderHelper.get_unique_values(values)
         while True:
             display_options(player, unique_opt)
             if computer_turn:
