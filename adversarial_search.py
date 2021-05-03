@@ -22,7 +22,7 @@ class AdversarialSearch:
 
     def min_value(self, alpha, beta, depth, state, current_player):
         if self.cut_off(depth):
-            return - self.eval(state)
+            return - self.eval(state, current_player)
         value = self.settings.highest_value
         states = self.moves_manager.get_possible_moves(current_player)
         value = min(map(lambda s: self.max_value(alpha, beta, depth+1, s, current_player), states))
@@ -33,7 +33,7 @@ class AdversarialSearch:
 
     def max_value(self, alpha, beta, depth, state, current_player):
         if self.cut_off(depth):
-            return self.eval(state)
+            return self.eval(state, current_player)
         value = self.settings.lowest_value
         states = self.moves_manager.get_possible_moves(current_player)
         value = max(map(lambda s: self.min_value(alpha, beta, depth+1, s, current_player), states))
@@ -42,8 +42,8 @@ class AdversarialSearch:
         alpha = min(alpha, value)
         return value
 
-    def eval(self, state):
-        self.settings.heuristic(state, self.moves_manager)
+    def eval(self, state, current_player):
+        return self.settings.heuristic(state, self.moves_manager, current_player)
 
     def cut_off(self, depth):
         return depth == self.settings.max_depth

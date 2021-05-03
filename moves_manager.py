@@ -127,3 +127,4 @@ class MovesManager:
             print("Choose one of the options please!")
         for option in filter(lambda op: op.final_pos == unique_opt[option_decided - 1], possible_moves):
             self._apply_move(player, option, player_enemy)
+
