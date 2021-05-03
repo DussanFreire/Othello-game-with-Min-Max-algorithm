@@ -1,4 +1,6 @@
 
 class HeuristicFunctionCollection:
-    def highest_score(self, state):
+
+    @staticmethod
+    def highest_score(state, moves_manager):
         print("Nice othello heuristic")

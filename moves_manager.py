@@ -66,7 +66,7 @@ class MovesManager:
             for action in self.settings.actions:
                 enemy_found = False
                 first_iteration = True
-                won_cells = 0
+                winnable_cells = 0
                 col, row = get_next_position(action, token_pos[1], token_pos[0])
                 while True:
 
@@ -79,7 +79,7 @@ class MovesManager:
                         first_iteration = False
 
                     if self.board.cells[row][col].token == self.settings.empty_token and enemy_found:
-                        possible_moves.append(Move((row, col), (token_pos[0], token_pos[1]), action, won_cells))
+                        possible_moves.append(Move((row, col), (token_pos[0], token_pos[1]), action, winnable_cells))
                         break
 
                     if self.board.cells[row][col].token == self.settings.empty_token:
@@ -90,7 +90,7 @@ class MovesManager:
 
                     if self.board.cells[row][col].token == enemy_token:
                         enemy_found = True
-                        won_cells += 1
+                        winnable_cells  += 1
                         col, row = get_next_position(action, col, row)
                         continue
 

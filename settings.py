@@ -1,4 +1,5 @@
-
+import numpy as np
+from heuristiFunctionCollection import  HeuristicFunctionCollection
 
 class Settings:
     def __init__(self):
@@ -8,8 +9,10 @@ class Settings:
         self.empty_token = '_'
         self.min = "min"
         self.max = "max"
-        self.depth = 10
-        self.heuristic = None
+        self.lowest_value = - np.inf
+        self.highest_value = np.inf
+        self.max_depth = 3
+        self.heuristic = HeuristicFunctionCollection().highest_score
         self.token_color = "\033[0;37m"       # white
         self.p1_color = "\033[0;32m"          # green
         self.p2_color = "\033[0;31m"          # red

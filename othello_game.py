@@ -9,7 +9,6 @@ if __name__ == "__main__":
     token1 = settings.p1_token
     token2 = settings.p2_token
 
-    settings.heuristic = HeuristicFunctionCollection().highest_score(1)
     board = Board(settings)
     board.create_empty_board()
     # os.system("cls")   NECESARIO.  Si los colors no funcionan hay que hacer un cls

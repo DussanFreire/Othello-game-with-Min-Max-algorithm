@@ -1,16 +1,18 @@
-import numpy as np
 from moves_manager import MovesManager
 # import copy
 
 
 class AdversarialSearch:
-    def __init__(self, settings):
+    def __init__(self, settings, moves_manager):
         self.settings = settings
+        self.current_player = None
+        self.moves_manager = moves_manager
 
-    def min_max_with_depth(self, states, focus):
+    def min_max_with_depth(self, state, focus, current_player):
+        states = self.moves_manager.get_possible_moves(current_player)
         if len(states) > 1:
             if focus == self.settings.min:
-                min(map(lambda state: self.max_value(- np.inf, np.inf, self.settings.depth, state), states))
+                min(map(lambda s: self.max_value(self.settings.lowest_value, self.settings.highest_value, self.settings.max_depth, s), states))
             else:
                 max(self.settings.heuristic())
         elif len(states) == 1:
@@ -18,18 +20,33 @@ class AdversarialSearch:
         else:
             return None
 
-    def min_value(self, alpha, beta, depth):
-        pass
+    def min_value(self, alpha, beta, depth, state, current_player):
+        if self.cut_off(depth):
+            return - self.eval(state)
+        value = self.settings.highest_value
+        states = self.moves_manager.get_possible_moves(current_player)
+        value = min(map(lambda s: self.max_value(alpha, beta, depth+1, s, current_player), states))
+        if value >= alpha:
+            return value
+        beta = min(beta, value)
+        return value
 
-    def max_value(self, alpha, beta, depth, state):
-        moves_manager = MovesManager(self.settings, state)
-        return 1
+    def max_value(self, alpha, beta, depth, state, current_player):
+        if self.cut_off(depth):
+            return self.eval(state)
+        value = self.settings.lowest_value
+        states = self.moves_manager.get_possible_moves(current_player)
+        value = max(map(lambda s: self.min_value(alpha, beta, depth+1, s, current_player), states))
+        if value >= beta:
+            return value
+        alpha = min(alpha, value)
+        return value
 
     def eval(self, state):
-        pass
+        self.settings.heuristic(state, self.moves_manager)
 
-    def cut_off(self, state, depth):
-        pass
+    def cut_off(self, depth):
+        return depth == self.settings.max_depth
 
     def alpha_beta_prunning(self):
         pass
