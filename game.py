@@ -1,6 +1,6 @@
 import datetime
-from adversarial_search import AdversarialSearch
 from moves_manager import MovesManager
+
 
 class Game:
     def __init__(self, board, player_1, player_2, settings):
@@ -11,6 +11,7 @@ class Game:
         self.p1_time_in_each_move = []
         self.p2_time_in_each_move = []
         self.moves_manager = MovesManager(settings, board)
+        self.adversarial_search = None
 
     def append_time(self, player, stop, start):
         response_time = stop - start if stop - start >= 0 else 0
@@ -30,7 +31,6 @@ class Game:
         return (self.player1, self.player2) if player_on_turn != self.player1 else (self.player2, self.player1)
 
     def match(self):
-        adversarial_search = AdversarialSearch(self.settings)
         turn_number = 1
         player_on_turn = self.player2
         player_enemy = self.player1
@@ -58,7 +58,7 @@ class Game:
 
             if len(possible_moves) <= 0 and no_more_moves:
                 break
-            #make move
+            # make move
             self.moves_manager.make_move(player_on_turn, possible_moves, player_enemy, computer_turn)
 
             # Stop Time

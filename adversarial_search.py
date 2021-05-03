@@ -1,5 +1,3 @@
-from moves_manager import MovesManager
-# import copy
 
 
 class AdversarialSearch:

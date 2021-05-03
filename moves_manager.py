@@ -1,5 +1,7 @@
 import numpy
 from move import Move
+from adversarial_search import AdversarialSearch
+from copy import copy
 
 
 def get_next_position(action, col, row):
@@ -55,6 +57,7 @@ class MovesManager:
         self.player2 = None
         self.settings = settings
         self.board = board
+        self.adversarial_search = AdversarialSearch(self.settings, copy(self))
 
     def _is_out_of_bounds(self, col, row):
         return col < 0 or row < 0 or col >= self.settings.board_size or row >= self.settings.board_size or col >= self.settings.board_size
@@ -90,7 +93,7 @@ class MovesManager:
 
                     if self.board.cells[row][col].token == enemy_token:
                         enemy_found = True
-                        winnable_cells  += 1
+                        winnable_cells += 1
                         col, row = get_next_position(action, col, row)
                         continue
 
@@ -127,4 +130,3 @@ class MovesManager:
             print("Choose one of the options please!")
         for option in filter(lambda op: op.final_pos == unique_opt[option_decided - 1], possible_moves):
             self._apply_move(player, option, player_enemy)
-

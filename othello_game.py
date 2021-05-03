@@ -1,5 +1,4 @@
 from settings import Settings
-from heuristiFunctionCollection import HeuristicFunctionCollection
 from player import Player
 from board import Board
 from game import Game
@@ -18,9 +17,3 @@ if __name__ == "__main__":
     game = Game(board, player1, player2, settings)
     game.play()
 
-""" Colors:
-        white = "\033[1;37m"
-        green = "\033[0;32m"
-        yellow = "\033[1;30m"
-        brown = "\033[0;33m"
-"""
