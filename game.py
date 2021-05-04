@@ -1,5 +1,6 @@
 import datetime
 from moves_manager import MovesManager
+from board_marker import BoardMarker
 
 
 class Game:
@@ -38,15 +39,14 @@ class Game:
         response_time = None
         computer_turn = False
         while True:
-            start = datetime.datetime.now().microsecond
+            start = datetime.datetime.now().second
 
             possible_moves = self.moves_manager.get_possible_moves(player_on_turn)
-            self.mark_possible_moves(possible_moves)
-            self.board.draw_board(turn_number, response_time)
+            self.display_possible_moves(possible_moves, turn_number, response_time)
 
             if len(possible_moves) <= 0 and no_more_moves == False:
                 # Stop Time
-                response_time = self.append_time(player_on_turn, datetime.datetime.now().microsecond, start)
+                response_time = self.append_time(player_on_turn, datetime.datetime.now().second, start)
 
                 # Change player
                 player_on_turn, player_enemy = self.change_turn_player(player_on_turn)
@@ -62,10 +62,9 @@ class Game:
             self.moves_manager.make_move(player_on_turn, possible_moves, player_enemy, computer_turn)
 
             # Stop Time
-            response_time = self.append_time(player_on_turn, datetime.datetime.now().microsecond, start)
+            response_time = self.append_time(player_on_turn, datetime.datetime.now().second, start)
 
             # Prepare board for the next turn
-            self.uncheck_possible_moves(possible_moves)
 
             # Change player
             player_on_turn, player_enemy = self.change_turn_player(player_on_turn)
@@ -73,14 +72,10 @@ class Game:
             no_more_moves = False
             turn_number += 1
 
-    def mark_possible_moves(self, possible_moves):
-        for move in possible_moves:
-            self.board.cells[move.final_pos[0]][move.final_pos[1]].token = self.settings.new_option_token
-
-    def uncheck_possible_moves(self, possible_moves):
-        for move in possible_moves:
-            if self.board.cells[move.final_pos[0]][move.final_pos[1]].token == self.settings.new_option_token:
-                self.board.cells[move.final_pos[0]][move.final_pos[1]].token = self.settings.empty_token
+    def display_possible_moves(self, possible_moves, turn_number, response_time):
+        BoardMarker.mark_possible_moves(self.board, possible_moves, self.settings)
+        self.board.display(turn_number, response_time)
+        BoardMarker.uncheck_possible_moves(self.board, possible_moves, self.settings)
 
     def display_results(self):
         p1_score = len(self.player1.tokens_on_board)

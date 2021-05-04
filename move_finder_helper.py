@@ -1,4 +1,5 @@
 from move import Move
+from copy import deepcopy
 
 
 class MoveFinderHelper:
@@ -9,6 +10,16 @@ class MoveFinderHelper:
         for x in list_with_duplicated_values:
             if x not in unique_list:
                 unique_list.append(x)
+        return unique_list
+
+    @staticmethod
+    def get_unique_final_pos(unique_pos, list_with_duplicated_values):
+        unique_list = []
+        for x in unique_pos:
+            for pos in list_with_duplicated_values:
+                if x == pos.final_pos:
+                    unique_list.append(pos)
+                    break
         return unique_list
 
     @staticmethod
@@ -84,3 +95,17 @@ class MoveFinderHelper:
                     col, row = MoveFinderHelper.get_next_position(action, col, row)
                     enemy_found = False
         return possible_moves
+
+    @staticmethod
+    def apply_move(board, player, possible_move, player_enemy):
+        current_pos = possible_move.initial_pos
+        while True:
+            col, row = MoveFinderHelper.get_next_position(possible_move.action, current_pos[1], current_pos[0])
+            board.cells[row][col].token = player.token
+            current_pos = (row, col)
+            player.tokens_on_board.append(current_pos)
+            if current_pos == possible_move.final_pos:
+                player.tokens_on_board = MoveFinderHelper.get_unique_values(player.tokens_on_board)
+                break
+            player_enemy.tokens_on_board.remove(current_pos)
+        return deepcopy(board)

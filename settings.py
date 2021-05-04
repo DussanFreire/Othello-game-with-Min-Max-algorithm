@@ -12,7 +12,7 @@ class Settings:
         self.max = "max"
         self.lowest_value = - np.inf
         self.highest_value = np.inf
-        self.max_depth = 3
+        self.max_depth = 5
         self.heuristic = HeuristicFunctionCollection().highest_score
         self.token_color = "\033[0;37m"  # white
         self.p1_color = "\033[0;32m"  # green
