@@ -13,7 +13,7 @@ class MovesManager:
 
     def display_options(self, player, options):
         indice = 1
-        print(player.name, "Choose one option:", player.token)
+        print(player.name, "Choose one option, your token is ", player.token, ":")
         for opt in options:
             print(f"{indice}: {self.settings.letters[opt[1]]} {opt[0] + 1}")
             indice += 1

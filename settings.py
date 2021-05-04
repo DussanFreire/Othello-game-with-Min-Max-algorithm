@@ -4,9 +4,9 @@ from heuristiFunctionCollection import HeuristicFunctionCollection
 
 class Settings:
     def __init__(self):
-        self.p1_token = 'O'
-        self.p2_token = 'X'
-        self.new_option_token = "*"
+        self.p1_token = 'o'
+        self.p2_token = 'x'
+        self.new_option_token = "."
         self.empty_token = '_'
         self.min = "min"
         self.max = "max"

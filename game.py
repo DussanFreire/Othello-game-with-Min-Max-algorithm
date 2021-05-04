@@ -42,7 +42,7 @@ class Game:
             start = datetime.datetime.now().second
 
             possible_moves = self.moves_manager.get_possible_moves(player_on_turn)
-            self.display_possible_moves(possible_moves, turn_number, response_time)
+            self.display_possible_moves(possible_moves, turn_number, response_time, player_on_turn, player_enemy)
 
             if len(possible_moves) <= 0 and no_more_moves == False:
                 # Stop Time
@@ -72,9 +72,9 @@ class Game:
             no_more_moves = False
             turn_number += 1
 
-    def display_possible_moves(self, possible_moves, turn_number, response_time):
+    def display_possible_moves(self, possible_moves, turn_number, response_time, player_on_turn, player_enemy):
         BoardMarker.mark_possible_moves(self.board, possible_moves, self.settings)
-        self.board.display(turn_number, response_time)
+        self.board.display(turn_number, response_time, player_on_turn, player_enemy)
         BoardMarker.uncheck_possible_moves(self.board, possible_moves, self.settings)
 
     def display_results(self):
