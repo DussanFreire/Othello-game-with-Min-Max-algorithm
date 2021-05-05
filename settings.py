@@ -12,7 +12,7 @@ class Settings:
     lowest_value = - np.inf
     highest_value = np.inf
     max_depth = 5
-    heuristic = HeuristicFunctionCollection().highest_score
+    heuristic = HeuristicFunctionCollection().movility_strategy
     token_color = "\033[0;37m"  # white
     p1_color = "\033[0;32m"  # green
     p2_color = "\033[0;31m"  # red

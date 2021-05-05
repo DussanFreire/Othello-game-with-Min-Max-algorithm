@@ -32,6 +32,7 @@ class Game:
 
     def match(self):
         turn_number = 1
+        self.board.turns_number = turn_number
         player_on_turn = self.player2
         player_enemy = self.player1
         no_more_moves = False
@@ -40,7 +41,8 @@ class Game:
         while True:
             start = datetime.datetime.now().second
 
-            possible_moves = self.moves_manager.get_possible_moves(player_on_turn)
+            player_on_turn.possible_moves = self.moves_manager.get_possible_moves(player_on_turn)
+            possible_moves = player_on_turn.possible_moves
             self.display_possible_moves(possible_moves, turn_number, response_time, player_on_turn, player_enemy)
 
             if len(possible_moves) <= 0 and no_more_moves == False:
@@ -52,6 +54,7 @@ class Game:
 
                 no_more_moves = True
                 turn_number += 1
+                self.board.turns_number = turn_number
                 computer_turn = not computer_turn
                 continue
 
@@ -70,6 +73,7 @@ class Game:
             computer_turn = not computer_turn
             no_more_moves = False
             turn_number += 1
+            self.board.turns_number = turn_number
 
     def display_possible_moves(self, possible_moves, turn_number, response_time, player_on_turn, player_enemy):
         BoardMarker.mark_possible_moves(self.board, possible_moves)

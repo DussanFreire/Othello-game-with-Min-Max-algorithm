@@ -6,6 +6,7 @@ from settings import Settings
 class Board:
     def __init__(self):
         self.cells = None
+        self.turns_number = 0
 
     def display(self, turn_number, response_time, player_on_turn, player_enemy):
         i = 1
