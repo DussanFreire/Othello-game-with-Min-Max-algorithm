@@ -1,17 +1,25 @@
 import datetime
 from moves_manager import MovesManager
 from board_marker import BoardMarker
+from settings import Settings
+from player import Player
 
 
 class Game:
-    def __init__(self, board, player_1, player_2):
+    def __init__(self, board, human_starts):
         self.board = board
-        self.player1 = player_1
-        self.player2 = player_2
+        if human_starts:
+            self.player1 = Player("Computer", Settings.p1_token)
+            self.player2 = Player("Human", Settings.p2_token)
+        else:
+            self.player1 = Player("Human", Settings.p1_token)
+            self.player2 = Player("Computer", Settings.p2_token)
+
         self.p1_time_in_each_move = []
         self.p2_time_in_each_move = []
         self.moves_manager = MovesManager(board)
         self.adversarial_search = None
+        self.human_starts = human_starts
 
     def append_time(self, player, stop, start):
         response_time = stop - start if stop - start >= 0 else 0
@@ -32,17 +40,15 @@ class Game:
 
     def match(self):
         turn_number = 1
-        self.board.turns_number = turn_number
         player_on_turn = self.player2
         player_enemy = self.player1
         no_more_moves = False
         response_time = None
-        computer_turn = False
+        computer_turn = not self.human_starts
         while True:
             start = datetime.datetime.now().second
 
-            player_on_turn.possible_moves = self.moves_manager.get_possible_moves(player_on_turn)
-            possible_moves = player_on_turn.possible_moves
+            possible_moves = self.moves_manager.get_possible_moves(player_on_turn)
             self.display_possible_moves(possible_moves, turn_number, response_time, player_on_turn, player_enemy)
 
             if len(possible_moves) <= 0 and no_more_moves == False:
@@ -54,7 +60,6 @@ class Game:
 
                 no_more_moves = True
                 turn_number += 1
-                self.board.turns_number = turn_number
                 computer_turn = not computer_turn
                 continue
 
@@ -73,7 +78,6 @@ class Game:
             computer_turn = not computer_turn
             no_more_moves = False
             turn_number += 1
-            self.board.turns_number = turn_number
 
     def display_possible_moves(self, possible_moves, turn_number, response_time, player_on_turn, player_enemy):
         BoardMarker.mark_possible_moves(self.board, possible_moves)

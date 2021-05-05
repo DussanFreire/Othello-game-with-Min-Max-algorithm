@@ -14,11 +14,12 @@ class MoveHelper:
 
     @staticmethod
     def get_unique_final_pos(list_with_duplicated_values):
-        unique_list = []
-        for x in list_with_duplicated_values:
-            if not list(filter(lambda v: v.final_pos == x.final_pos, unique_list)):
-                unique_list.append(x)
-        return unique_list
+        values = list(map(lambda m: m.final_pos, list_with_duplicated_values))
+        unique_list = MoveHelper.get_unique_values(values)
+        final_list = []
+        for x in unique_list:
+            final_list.append(list(filter(lambda v: v.final_pos == x, list_with_duplicated_values)))
+        return final_list, unique_list
 
     @staticmethod
     def get_next_position(action, col, row):
@@ -95,14 +96,17 @@ class MoveHelper:
         return possible_moves
 
     @staticmethod
-    def apply_move(board, player, possible_move, player_enemy):
-        current_pos = possible_move.initial_pos
-        while True:
-            col, row = MoveHelper.get_next_position(possible_move.action, current_pos[1], current_pos[0])
-            board.cells[row][col].token = player.token
-            current_pos = (row, col)
-            player.tokens_on_board.append(current_pos)
-            if current_pos == possible_move.final_pos:
-                player.tokens_on_board = MoveHelper.get_unique_values(player.tokens_on_board)
-                break
-            player_enemy.tokens_on_board.remove(current_pos)
+    def apply_move(board, player, player_enemy, possible_moves):
+        for pos in possible_moves:
+            current_pos = pos.initial_pos
+            while True:
+                col, row = MoveHelper.get_next_position(pos.action, current_pos[1], current_pos[0])
+                board.place_token(row, col, player.token)
+                # board.cells[row][col].token = player.token
+                current_pos = (row, col)
+                player.tokens_on_board.append(current_pos)
+                if current_pos == pos.final_pos:
+                    player.tokens_on_board = MoveHelper.get_unique_values(player.tokens_on_board)
+                    break
+                player_enemy.tokens_on_board.remove(current_pos)
+

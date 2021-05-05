@@ -27,19 +27,21 @@ class MovesManager:
         return MoveHelper.get_possible_moves(player, self.board)
 
     def make_move(self, player, possible_moves, player_enemy, computer_turn):
-        values = list(map(lambda m: m.final_pos, possible_moves))
-        unique_opt = MoveHelper.get_unique_values(values)
+
+        unique_values, unique_opt = MoveHelper.get_unique_final_pos(possible_moves)
         while True:
             display_options(player, unique_opt)
             if computer_turn:
-                option_decided = AdversarialSearch.min_max_with_depth(player, deepcopy(self.board), player_enemy)
+                option_decided = AdversarialSearch.min_max_with_depth(player, deepcopy(self.board), player_enemy, unique_values)
+                # option_decided = numpy.random.randint(1, len(unique_opt) + 1)
+
             else:
                 # option_decided = int(input())
                 option_decided = numpy.random.randint(1, len(unique_opt) + 1)
+                # option_decided = 1
             print("choice:", option_decided)
 
             if option_decided in range(1, len(unique_opt) + 1):
                 break
             print("Choose one of the options please!")
-        for option in filter(lambda op: op.final_pos == unique_opt[option_decided - 1], possible_moves):
-            MoveHelper.apply_move(self.board, player, option, player_enemy)
+        MoveHelper.apply_move(self.board, player,  player_enemy, unique_values[option_decided-1])
