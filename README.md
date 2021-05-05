@@ -35,7 +35,7 @@ The specific requirements are the following:
 
 ## Solution description
 
-x
+
 
 
 

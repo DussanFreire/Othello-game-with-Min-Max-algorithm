@@ -3,6 +3,8 @@ from heuristiFunctionCollection import HeuristicFunctionCollection
 
 
 class Settings:
+    heuristic_aux = HeuristicFunctionCollection.strategic_place_aux
+    heuristic_aux_2 = HeuristicFunctionCollection.strategic_place_aux_2
     p1_token = 'o'
     p2_token = 'x'
     new_option_token = "."
@@ -11,8 +13,8 @@ class Settings:
     max = "max"
     lowest_value = - np.inf
     highest_value = np.inf
-    max_depth = 5
-    heuristic = HeuristicFunctionCollection().highest_score
+    max_depth = 4
+    heuristic = HeuristicFunctionCollection().strategic_place
     token_color = "\033[0;37m"  # white
     p1_color = "\033[0;32m"  # green
     p2_color = "\033[0;31m"  # red
