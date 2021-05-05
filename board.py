@@ -43,20 +43,20 @@ class Board:
         pos.token = token
         if pos.value == 100:
             if col == row == 0:
-                self.cells[1][1].value = 70
-                self.cells[1][0].value = 70
-                self.cells[0][1].value = 70
+                self.cells[1][1].value = 1
+                self.cells[1][0].value = 1
+                self.cells[0][1].value = 1
             if col == row == 7:
-                self.cells[6][7].value = 70
-                self.cells[6][6].value = 70
-                self.cells[7][6].value = 70
+                self.cells[6][7].value = 1
+                self.cells[6][6].value = 1
+                self.cells[7][6].value = 1
             if col == 0 and row == 7:
-                self.cells[6][0].value = 70
-                self.cells[6][1].value = 70
-                self.cells[7][1].value = 70
+                self.cells[6][0].value = 1
+                self.cells[6][1].value = 1
+                self.cells[7][1].value = 1
             if col == 7 and row == 0:
-                self.cells[0][6].value = 70
-                self.cells[1][6].value = 70
-                self.cells[1][7].value = 70
+                self.cells[0][6].value = 1
+                self.cells[1][6].value = 1
+                self.cells[1][7].value = 1
 
             
