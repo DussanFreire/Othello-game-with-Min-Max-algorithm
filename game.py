@@ -4,14 +4,13 @@ from board_marker import BoardMarker
 
 
 class Game:
-    def __init__(self, board, player_1, player_2, settings):
+    def __init__(self, board, player_1, player_2):
         self.board = board
         self.player1 = player_1
         self.player2 = player_2
-        self.settings = settings
         self.p1_time_in_each_move = []
         self.p2_time_in_each_move = []
-        self.moves_manager = MovesManager(settings, board)
+        self.moves_manager = MovesManager(board)
         self.adversarial_search = None
 
     def append_time(self, player, stop, start):
@@ -73,9 +72,9 @@ class Game:
             turn_number += 1
 
     def display_possible_moves(self, possible_moves, turn_number, response_time, player_on_turn, player_enemy):
-        BoardMarker.mark_possible_moves(self.board, possible_moves, self.settings)
+        BoardMarker.mark_possible_moves(self.board, possible_moves)
         self.board.display(turn_number, response_time, player_on_turn, player_enemy)
-        BoardMarker.uncheck_possible_moves(self.board, possible_moves, self.settings)
+        BoardMarker.uncheck_possible_moves(self.board, possible_moves)
 
     def display_results(self):
         p1_score = len(self.player1.tokens_on_board)

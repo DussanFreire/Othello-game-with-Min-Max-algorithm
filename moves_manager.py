@@ -1,28 +1,28 @@
 from adversarial_search import AdversarialSearch
 from move_finder_helper import MoveFinderHelper
 from copy import deepcopy
+from settings import Settings
 import numpy
 
 
 class MovesManager:
-    def __init__(self, settings, board):
+    def __init__(self, board):
         self.player1 = None
         self.player2 = None
-        self.settings = settings
         self.board = board
 
     def display_options(self, player, options):
         indice = 1
         print(player.name, "Choose one option, your token is ", player.token, ":")
         for opt in options:
-            print(f"{indice}: {self.settings.letters[opt[1]]} {opt[0] + 1}")
+            print(f"{indice}: {Settings.letters[opt[1]]} {opt[0] + 1}")
             indice += 1
 
     def _is_out_of_bounds(self, col, row):
-        return col < 0 or row < 0 or col >= self.settings.board_size or row >= self.settings.board_size or col >= self.settings.board_size
+        return col < 0 or row < 0 or col >= Settings.board_size or row >= Settings.board_size or col >= Settings.board_size
 
     def get_possible_moves(self, player):
-        return MoveFinderHelper.get_possible_moves(player, self.board, self.settings)
+        return MoveFinderHelper.get_possible_moves(player, self.board)
 
     def make_move(self, player, possible_moves, player_enemy, computer_turn):
         values = list(map(lambda m: m.final_pos, possible_moves))
@@ -30,8 +30,7 @@ class MovesManager:
         while True:
             self.display_options(player, unique_opt)
             if computer_turn:
-                option_decided = AdversarialSearch.min_max_with_depth(player, deepcopy(self.board), self.settings,
-                                                                      player_enemy)
+                option_decided = AdversarialSearch.min_max_with_depth(player, deepcopy(self.board), player_enemy)
             else:
                 # option_decided = int(input())
                 option_decided = numpy.random.randint(1, len(unique_opt) + 1)

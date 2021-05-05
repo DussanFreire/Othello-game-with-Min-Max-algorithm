@@ -1,5 +1,5 @@
 from move import Move
-
+from settings import Settings
 
 class MoveFinderHelper:
 
@@ -50,22 +50,22 @@ class MoveFinderHelper:
         return next_column, next_row
 
     @staticmethod
-    def _is_out_of_bounds(col, row, settings):
-        return col < 0 or row < 0 or col >= settings.board_size or row >= settings.board_size or col >= settings.board_size
+    def _is_out_of_bounds(col, row):
+        return col < 0 or row < 0 or col >= Settings.board_size or row >= Settings.board_size or col >= Settings.board_size
 
     @staticmethod
-    def get_possible_moves(player, board, settings):
+    def get_possible_moves(player, board):
         possible_moves = []
-        enemy_token = settings.p2_token if player.token == settings.p1_token else settings.p1_token
+        enemy_token = Settings.p2_token if player.token == Settings.p1_token else Settings.p1_token
         for token_pos in player.tokens_on_board:
-            for action in settings.actions:
+            for action in Settings.actions:
                 enemy_found = False
                 first_iteration = True
                 winnable_cells = 0
                 col, row = MoveFinderHelper.get_next_position(action, token_pos[1], token_pos[0])
                 while True:
 
-                    if MoveFinderHelper._is_out_of_bounds(col, row, settings):
+                    if MoveFinderHelper._is_out_of_bounds(col, row):
                         break
 
                     if first_iteration:
@@ -73,11 +73,11 @@ class MoveFinderHelper:
                             break
                         first_iteration = False
 
-                    if board.cells[row][col].token == settings.empty_token and enemy_found:
+                    if board.cells[row][col].token == Settings.empty_token and enemy_found:
                         possible_moves.append(Move((row, col), (token_pos[0], token_pos[1]), action, winnable_cells))
                         break
 
-                    if board.cells[row][col].token == settings.empty_token:
+                    if board.cells[row][col].token == Settings.empty_token:
                         break
 
                     if board.cells[row][col].token == player.token:
