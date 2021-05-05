@@ -1,4 +1,4 @@
-from move_finder_helper import MoveFinderHelper
+from moves_helper import MoveHelper
 from copy import deepcopy
 from settings import Settings
 
@@ -13,9 +13,9 @@ class AdversarialSearch:
         AdversarialSearch.alpha = Settings.lowest_value
 
         AdversarialSearch.computer = deepcopy(current_player)
-        p_moves = MoveFinderHelper.get_possible_moves(AdversarialSearch.computer, deepcopy(board))
+        p_moves = MoveHelper.get_possible_moves(AdversarialSearch.computer, deepcopy(board))
 
-        unique_opt = MoveFinderHelper.get_unique_final_pos(p_moves)
+        unique_opt = MoveHelper.get_unique_final_pos(p_moves)
         if len(p_moves) > 1:
             heuristic_values = []
             for p_move in unique_opt:
@@ -28,14 +28,14 @@ class AdversarialSearch:
 
     @staticmethod
     def _min_value(depth, board, possible_move, current_player, player_enemy):
-        MoveFinderHelper.apply_move(board, current_player, possible_move, player_enemy)
+        MoveHelper.apply_move(board, current_player, possible_move, player_enemy)
         if AdversarialSearch._cut_off(depth):
             computer = current_player if current_player.token == AdversarialSearch.computer.token else player_enemy
             return - AdversarialSearch._eval(board, computer)
         value = Settings.highest_value
-        p_moves = MoveFinderHelper.get_possible_moves(player_enemy, board)
+        p_moves = MoveHelper.get_possible_moves(player_enemy, board)
 
-        unique_opt = MoveFinderHelper.get_unique_final_pos(p_moves)
+        unique_opt = MoveHelper.get_unique_final_pos(p_moves)
         for p_move in unique_opt:
             copied_enemy = deepcopy(player_enemy)
             copied_current_player = deepcopy(current_player)
@@ -48,15 +48,15 @@ class AdversarialSearch:
 
     @staticmethod
     def _max_value(depth, board, possible_move, current_player, player_enemy):
-        MoveFinderHelper.apply_move(board, current_player, possible_move, player_enemy)
+        MoveHelper.apply_move(board, current_player, possible_move, player_enemy)
         if AdversarialSearch._cut_off(depth):
             computer = current_player if current_player.token == AdversarialSearch.computer.token else player_enemy
             return - AdversarialSearch._eval(board, computer)
 
         value = Settings.lowest_value
-        p_moves = MoveFinderHelper.get_possible_moves(player_enemy, board)
+        p_moves = MoveHelper.get_possible_moves(player_enemy, board)
 
-        unique_opt = MoveFinderHelper.get_unique_final_pos(p_moves)
+        unique_opt = MoveHelper.get_unique_final_pos(p_moves)
 
         for p_move in unique_opt:
             copied_enemy = deepcopy(player_enemy)

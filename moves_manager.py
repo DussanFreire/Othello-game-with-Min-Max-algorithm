@@ -1,8 +1,20 @@
 from adversarial_search import AdversarialSearch
-from move_finder_helper import MoveFinderHelper
+from moves_helper import MoveHelper
 from copy import deepcopy
 from settings import Settings
 import numpy
+
+
+def display_options(player, options):
+    indice = 1
+    print(player.name, "Choose one option, your token is ", player.token, ":")
+    for opt in options:
+        print(f"{indice}: {Settings.letters[opt[1]]} {opt[0] + 1}")
+        indice += 1
+
+
+def _is_out_of_bounds(col, row):
+    return col < 0 or row < 0 or col >= Settings.board_size or row >= Settings.board_size or col >= Settings.board_size
 
 
 class MovesManager:
@@ -11,24 +23,14 @@ class MovesManager:
         self.player2 = None
         self.board = board
 
-    def display_options(self, player, options):
-        indice = 1
-        print(player.name, "Choose one option, your token is ", player.token, ":")
-        for opt in options:
-            print(f"{indice}: {Settings.letters[opt[1]]} {opt[0] + 1}")
-            indice += 1
-
-    def _is_out_of_bounds(self, col, row):
-        return col < 0 or row < 0 or col >= Settings.board_size or row >= Settings.board_size or col >= Settings.board_size
-
     def get_possible_moves(self, player):
-        return MoveFinderHelper.get_possible_moves(player, self.board)
+        return MoveHelper.get_possible_moves(player, self.board)
 
     def make_move(self, player, possible_moves, player_enemy, computer_turn):
         values = list(map(lambda m: m.final_pos, possible_moves))
-        unique_opt = MoveFinderHelper.get_unique_values(values)
+        unique_opt = MoveHelper.get_unique_values(values)
         while True:
-            self.display_options(player, unique_opt)
+            display_options(player, unique_opt)
             if computer_turn:
                 option_decided = AdversarialSearch.min_max_with_depth(player, deepcopy(self.board), player_enemy)
             else:
@@ -40,4 +42,4 @@ class MovesManager:
                 break
             print("Choose one of the options please!")
         for option in filter(lambda op: op.final_pos == unique_opt[option_decided - 1], possible_moves):
-            MoveFinderHelper.apply_move(self.board, player, option, player_enemy)
+            MoveHelper.apply_move(self.board, player, option, player_enemy)

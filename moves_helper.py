@@ -1,7 +1,8 @@
 from move import Move
 from settings import Settings
 
-class MoveFinderHelper:
+
+class MoveHelper:
 
     @staticmethod
     def get_unique_values(list_with_duplicated_values):
@@ -62,10 +63,10 @@ class MoveFinderHelper:
                 enemy_found = False
                 first_iteration = True
                 winnable_cells = 0
-                col, row = MoveFinderHelper.get_next_position(action, token_pos[1], token_pos[0])
+                col, row = MoveHelper.get_next_position(action, token_pos[1], token_pos[0])
                 while True:
 
-                    if MoveFinderHelper._is_out_of_bounds(col, row):
+                    if MoveHelper._is_out_of_bounds(col, row):
                         break
 
                     if first_iteration:
@@ -86,10 +87,10 @@ class MoveFinderHelper:
                     if board.cells[row][col].token == enemy_token:
                         enemy_found = True
                         winnable_cells += 1
-                        col, row = MoveFinderHelper.get_next_position(action, col, row)
+                        col, row = MoveHelper.get_next_position(action, col, row)
                         continue
 
-                    col, row = MoveFinderHelper.get_next_position(action, col, row)
+                    col, row = MoveHelper.get_next_position(action, col, row)
                     enemy_found = False
         return possible_moves
 
@@ -97,11 +98,11 @@ class MoveFinderHelper:
     def apply_move(board, player, possible_move, player_enemy):
         current_pos = possible_move.initial_pos
         while True:
-            col, row = MoveFinderHelper.get_next_position(possible_move.action, current_pos[1], current_pos[0])
+            col, row = MoveHelper.get_next_position(possible_move.action, current_pos[1], current_pos[0])
             board.cells[row][col].token = player.token
             current_pos = (row, col)
             player.tokens_on_board.append(current_pos)
             if current_pos == possible_move.final_pos:
-                player.tokens_on_board = MoveFinderHelper.get_unique_values(player.tokens_on_board)
+                player.tokens_on_board = MoveHelper.get_unique_values(player.tokens_on_board)
                 break
             player_enemy.tokens_on_board.remove(current_pos)
