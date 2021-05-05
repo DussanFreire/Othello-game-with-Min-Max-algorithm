@@ -15,6 +15,7 @@ class HeuristicFunctionCollection:
             return 70
         return None
 
+
     @staticmethod
     def strategic_place_aux_2(state, possible_moves):
         row, col = possible_moves[0].final_pos
